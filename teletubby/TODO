@@ -1,0 +1,29 @@
+### NOW ###
+- Fix uploading to GoogleDrive (DONE)
+- Clean-up reactions (DONE)
+- rewrite ML code
+- test ML code
+
+
+### SPRINT (Until 21.01.2021) ###
+- Build general structure (WIP)
+- PREPARE ML dataset
+- Functions for retrieving pictures from Drive
+- Refactor ML codes
+- Set up face-detection (DONE)
+- set up facial recognition
+- Move detector functionality to tools (DONE)
+
+### LOG ###
+- Fix refresh tokens with Google Drive
+- Error handling
+- Set up logging
+- Set up Docker
+- Create a DB
+- Authorize users
+- Connect to GitHub
+- NUKI API
+- CAMERA
+- Flask API (Client-Server Communication)
+- Move to Python 3.10
+- TESTS
