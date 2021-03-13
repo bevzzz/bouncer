@@ -1,13 +1,13 @@
 from new.server.chatbot.reaction.reactionBase import ReactionBase
 
 
-class ReactionStart(ReactionBase):
+class ReactionDefault(ReactionBase):
 
     def __init__(self, message, me):
         super().__init__(message, me)
 
     def response(self):
-        text = "Hi, {}!".format(self.user.get_name())
+        text = "Uff, I'm speechless..."
         self._send_message(text)
 
     def action(self):

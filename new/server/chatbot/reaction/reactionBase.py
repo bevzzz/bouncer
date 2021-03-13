@@ -18,8 +18,7 @@ class ReactionBase(metaclass=ABCMeta):
 
     @abstractmethod
     def response(self):
-        text = "Uff, I'm speechless..."
-        self._send_message(text)
+        pass
 
     @abstractmethod
     def action(self):

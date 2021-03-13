@@ -1,6 +1,5 @@
-from abc import ABCMeta, abstractmethod
 import re
-from new.server.chatbot.reaction.reactionBase import ReactionBase
+from new.server.chatbot.reaction.reactionDefault import ReactionDefault
 from new.server.chatbot.reaction.reactionStart import ReactionStart
 from new.server.chatbot.reaction.reactionAuthorize import ReactionAuthorize
 from new.server.chatbot.reaction.reactionNotAuthorized import ReactionNotAuthorized
@@ -9,12 +8,11 @@ from new.server.chatbot.reaction.reactionEnd import ReactionEnd
 from new.server.chatbot.reaction.reactionCommandUnknown import ReactionCommandUnknown
 
 
-class ReactionFactory(metaclass=ABCMeta):
+class ReactionFactory:
 
     def __init__(self, message, me):
         self.message = message
         self.me = me
-        pass
 
     @staticmethod
     def _is_command(msg):
@@ -48,6 +46,6 @@ class ReactionFactory(metaclass=ABCMeta):
                 reaction = ReactionNotAuthorized
 
         else:
-            reaction = ReactionBase
+            reaction = ReactionDefault
 
         return reaction(**params)
