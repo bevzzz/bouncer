@@ -1,7 +1,8 @@
 #!/home/dmytro/pycharm/bouncer/bouncerenv/bin/python3
 
 import logging
-import teletubby.tools.globals as glob
+import os
+import json
 from new.server.manager import Manager
 from new.server.chatbot.telegramBot import TelegramBot
 from new.server.storage.localStorage import LocalStorage
@@ -13,12 +14,13 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-# setup chatbot
-bot_token = glob.config['telegram']['token']
-chatbot = TelegramBot(bot_token)
-
 # setup storage
 storage = LocalStorage()
+
+# setup chatbot
+token_file = storage.read_config_json('tokens.json')
+chatbot = TelegramBot(token_file['bot_token'])
+
 
 # setup manager
 manager = Manager(chatbot, storage)
