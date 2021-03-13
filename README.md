@@ -8,7 +8,7 @@ The app consists of 3 main parts:
 1. Facial recognition service - a service which can identify the person in the picture (accessed via an API)
 1. Camera module that sends the pictures to the Manager
 
-## Manager
+### Manager
 
 Telegram-bot: @dvoretski_bot  
 Available commands: `/start`. `/end/`
