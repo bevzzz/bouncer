@@ -3,6 +3,7 @@ from new.server.chatbot.conversation import Conversation
 import logging
 import time
 
+
 class Manager:
 
     def __init__(self, chatbot, storage):

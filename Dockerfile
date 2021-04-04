@@ -1,8 +1,8 @@
-FROM jjanzic/docker-python3-opencv:latest
+FROM python:3.8
 
 WORKDIR /bouncer
 
-COPY requirements.txt requirements.txt
+COPY requirements.txt reqirements.txt
 RUN pip install -r requirements.txt
 
 RUN apt-get update
