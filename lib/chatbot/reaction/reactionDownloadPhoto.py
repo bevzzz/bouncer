@@ -25,14 +25,14 @@ class ReactionDownloadPhoto(ReactionBase):
     def _download_photo(self, file_id):
         return self.me.chatbot.download_file(file_id)
 
-    def _save_photo(self, img, to_folder):
-        name = '{}_{}'.format(to_folder, get_timestamp())
+    def _save_photo(self, img, to_dir):
+        name = '{}_{}.jpeg'.format(to_dir, get_timestamp())
 
         try:
-            self.me.storage.write_jpeg(
+            self.me.storage.write_image(
                 img=img,
                 name=name,
-                to_dir=to_folder
+                to_dir=to_dir
             )
             self.upload_successful = True
         except:

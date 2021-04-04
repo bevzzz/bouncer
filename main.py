@@ -1,9 +1,8 @@
 #!/home/dmytro/pycharm/bouncer/bouncerenv/bin/python3
 
-if __name__ == "__main__":
+from lib.utils.startup_manager import manager
 
-    from new.setup.startup_server import manager
+if __name__ == "__main__":
 
     while True:
         manager.talk()
-

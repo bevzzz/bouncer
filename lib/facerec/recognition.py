@@ -8,14 +8,16 @@ from lib.facerec.model import Model
 from lib.storage.localStorage import LocalStorage
 
 # TODO: make environment variables in docker-compose
-PICTURES_DIRECTORY = '/home/dmytro/pycharm/bouncer/new/server/pictures'
+PICTURES_DIRECTORY = '/home/dmytro/pycharm/bouncer/resources/images'
 
 storage = LocalStorage(root_path=PICTURES_DIRECTORY)
 
 base_url = '/bouncer/v1'
 app = Flask(__name__)
 
+storage.set_root_path('')
 encodings = storage.read_pickle('model', 'encodings.pickle')
+storage.set_root_path('images')
 model = Model(encodings)
 
 
@@ -50,12 +52,11 @@ def load_images_from_dict(imagesDict):
 
 def get_all_people():
     directories = storage.list_directory()
-    directories.remove("model")
     return directories
 
 
 def decode_base64_string(b64):
-    return base64.decodebytes(b64.encode())
+    return base64.decodebytes(b64.encode('utf-8'))
 
 
 def decode_hex_string(hex_str):
@@ -100,7 +101,10 @@ def train():
     train_set = load_images_from_dict(imagesDict)
 
     encodings_data = model.train(train_set=train_set)
+
+    storage.set_root_path('')
     storage.write_pickle(encodings_data, 'encodings.pickle', to_dir='model')
+    storage.set_root_path('images')
 
     status = 200
     message = f'Successfully trained for {", ".join(people)}'
@@ -136,6 +140,3 @@ def recognize():
         )
     )
 
-
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)

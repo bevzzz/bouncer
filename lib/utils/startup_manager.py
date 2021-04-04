@@ -1,8 +1,6 @@
 #!/home/dmytro/pycharm/bouncer/bouncerenv/bin/python3
 
 import logging
-import os
-import json
 from lib.manager import Manager
 from lib.chatbot.telegramBot import TelegramBot
 from lib.storage.localStorage import LocalStorage
@@ -18,9 +16,11 @@ logging.basicConfig(
 storage = LocalStorage()
 
 # setup chatbot
-token_file = storage.read_config_json('tokens.json')
+storage.set_root_path('')
+token_file = storage.read_json('config', 'tokens.json')
 chatbot = TelegramBot(token_file['bot_token'])
 
 
 # setup manager
+storage.set_root_path('images')
 manager = Manager(chatbot, storage)

@@ -50,3 +50,12 @@ class Conversation:
     def get_new_messages(self):
         new_messages = [msg for msg in self.messages.values() if not msg.is_read()]
         return new_messages
+
+    @staticmethod
+    def get_previous_message(message):
+        conversation = Conversation._get_instance(message)
+        last_message_id = message.get_message_id() - 2
+        try:
+            return conversation.messages[last_message_id]
+        except KeyError:
+            return message

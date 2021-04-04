@@ -1,4 +1,5 @@
 import re
+from lib.chatbot.conversation import Conversation
 from lib.chatbot.reaction.reactionDefault import ReactionDefault
 from lib.chatbot.reaction.reactionStart import ReactionStart
 from lib.chatbot.reaction.reactionAuthorize import ReactionAuthorize
@@ -6,6 +7,7 @@ from lib.chatbot.reaction.reactionNotAuthorized import ReactionNotAuthorized
 from lib.chatbot.reaction.reactionDownloadPhoto import ReactionDownloadPhoto
 from lib.chatbot.reaction.reactionEnd import ReactionEnd
 from lib.chatbot.reaction.reactionCommandUnknown import ReactionCommandUnknown
+from lib.chatbot.reaction.reactionRecognize import ReactionRecognize
 
 
 class ReactionFactory:
@@ -20,6 +22,7 @@ class ReactionFactory:
 
     def get(self):
         msg = self.message.get_text()
+        previous_message = Conversation.get_previous_message(self.message).get_text()
         user = self.message.get_author()
 
         params = {
@@ -33,6 +36,8 @@ class ReactionFactory:
                 reaction = ReactionStart
             elif msg == '/authorize':
                 reaction = ReactionCommandUnknown
+            elif msg == '/recognize':
+                reaction = ReactionDefault
             elif msg == '/end':
                 reaction = ReactionEnd
             else:
@@ -42,6 +47,8 @@ class ReactionFactory:
 
             if self.me.is_authorized_user(user):
                 reaction = ReactionDownloadPhoto
+            elif previous_message == '/recognize':
+                reaction = ReactionRecognize
             else:
                 reaction = ReactionNotAuthorized
 
