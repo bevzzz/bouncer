@@ -1,5 +1,5 @@
-from new.server.chatbot.reaction.reactionFactory import ReactionFactory
-from new.server.chatbot.conversation import Conversation
+from lib.chatbot.reaction.reactionFactory import ReactionFactory
+from lib.chatbot.conversation import Conversation
 import logging
 import time
 

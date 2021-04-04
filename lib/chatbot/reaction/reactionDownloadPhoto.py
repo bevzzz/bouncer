@@ -1,5 +1,5 @@
-from new.server.chatbot.reaction.reactionBase import ReactionBase
-from new.utils.helpers import get_timestamp
+from lib.chatbot.reaction.reactionBase import ReactionBase
+from lib.utils.helpers import get_timestamp
 
 
 class ReactionDownloadPhoto(ReactionBase):

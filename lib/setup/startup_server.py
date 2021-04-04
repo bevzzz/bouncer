@@ -3,9 +3,9 @@
 import logging
 import os
 import json
-from new.server.manager import Manager
-from new.server.chatbot.telegramBot import TelegramBot
-from new.server.storage.localStorage import LocalStorage
+from lib.manager import Manager
+from lib.chatbot.telegramBot import TelegramBot
+from lib.storage.localStorage import LocalStorage
 
 # setup logger
 logging.basicConfig(

@@ -1,4 +1,4 @@
-from new.server.user import Owner
+from lib.utils.user import Owner
 
 
 class UpdatesHandler:

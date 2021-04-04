@@ -1,5 +1,5 @@
 import collections
-from new.server.chatbot.updatesHandler import UpdatesHandler
+from lib.chatbot.updatesHandler import UpdatesHandler
 
 
 class Conversation:

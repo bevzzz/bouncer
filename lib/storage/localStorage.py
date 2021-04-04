@@ -1,7 +1,7 @@
 import os
 import json
 import pickle
-from new.server.storage.interface import Storage
+from lib.storage.interface import Storage
 
 
 class LocalStorage(Storage):

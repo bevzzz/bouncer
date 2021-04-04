@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from new.server.chatbot.telegramObject import TextMessage
+from lib.chatbot.telegramObject import TextMessage
 
 
 class ReactionBase(metaclass=ABCMeta):

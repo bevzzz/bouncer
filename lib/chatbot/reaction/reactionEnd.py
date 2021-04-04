@@ -1,4 +1,4 @@
-from new.server.chatbot.reaction.reactionBase import ReactionBase
+from lib.chatbot.reaction.reactionBase import ReactionBase
 
 
 class ReactionEnd(ReactionBase):

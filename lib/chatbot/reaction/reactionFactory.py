@@ -1,11 +1,11 @@
 import re
-from new.server.chatbot.reaction.reactionDefault import ReactionDefault
-from new.server.chatbot.reaction.reactionStart import ReactionStart
-from new.server.chatbot.reaction.reactionAuthorize import ReactionAuthorize
-from new.server.chatbot.reaction.reactionNotAuthorized import ReactionNotAuthorized
-from new.server.chatbot.reaction.reactionDownloadPhoto import ReactionDownloadPhoto
-from new.server.chatbot.reaction.reactionEnd import ReactionEnd
-from new.server.chatbot.reaction.reactionCommandUnknown import ReactionCommandUnknown
+from lib.chatbot.reaction.reactionDefault import ReactionDefault
+from lib.chatbot.reaction.reactionStart import ReactionStart
+from lib.chatbot.reaction.reactionAuthorize import ReactionAuthorize
+from lib.chatbot.reaction.reactionNotAuthorized import ReactionNotAuthorized
+from lib.chatbot.reaction.reactionDownloadPhoto import ReactionDownloadPhoto
+from lib.chatbot.reaction.reactionEnd import ReactionEnd
+from lib.chatbot.reaction.reactionCommandUnknown import ReactionCommandUnknown
 
 
 class ReactionFactory:

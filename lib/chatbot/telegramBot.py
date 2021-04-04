@@ -1,5 +1,5 @@
 from telegram import ReplyKeyboardMarkup
-from new.server.chatbot.interface import Chatbot
+from lib.chatbot.interface import Chatbot
 import requests
 import logging
 

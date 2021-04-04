@@ -2,10 +2,10 @@
 
 import base64
 import collections
-from new.utils.helpers import dict_len
+from lib.utils.helpers import dict_len
 from flask import Flask, jsonify, request
-from new.server.service.facerec.model import Model
-from new.server.storage.localStorage import LocalStorage
+from lib.facerec.model import Model
+from lib.storage.localStorage import LocalStorage
 
 # TODO: make environment variables in docker-compose
 PICTURES_DIRECTORY = '/home/dmytro/pycharm/bouncer/new/server/pictures'
