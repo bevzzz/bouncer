@@ -1,0 +1,9 @@
+start - initiate a conversation
+recognize - recognize the person in the next picture
+train - create new encodings file for existing pictures
+save_photo - save the next picture to the sender's directory
+end - end the conversation
+
+to be added:
+authorize - authorize yourself with Dvoretski
+whoshome - see who's at home
