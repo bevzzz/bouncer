@@ -1,7 +1,5 @@
-from telegram import ReplyKeyboardMarkup
 from lib.chatbot.interface import Chatbot
 import requests
-import logging
 
 
 class TelegramBot(Chatbot):
