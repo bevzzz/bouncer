@@ -1,4 +1,7 @@
 .idea
 bouncerenv
-resources
+resources/images
+resources/model
+resources/config/tokens.json
+resources/config/users.json
 log
