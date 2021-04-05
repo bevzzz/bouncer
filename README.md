@@ -11,7 +11,7 @@ The app consists of 3 main parts:
 ### Manager
 
 Telegram-bot: @dvoretski_bot  
-Available commands: `/start`. `/end/`
+Available commands: `/start`, `/save_photo`, `/train`, `/recognize`, `/end/`
 
 Currently all it does is upload pictures of the authorized users to their dedicated directories for Facial recognition service's later use.  
 The list of the authorized users is defined manually.

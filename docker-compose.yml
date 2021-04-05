@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  facerec:
+    image: bouncer/facerec
+    ports:
+    - "5000:5000"
+    volumes:
+      - mydata:/home/dmytro/pycharm/bouncer/resources
+  manager:
+    image: bouncer/manager
+    volumes:
+      - mydata:/home/dmytro/pycharm/bouncer/resources
+    depends_on:
+      - facerec
+volumes:
+  mydata: {}
