@@ -43,7 +43,7 @@ class Manager:
         reaction.response()
         message.mark_as_read()
 
-    def _get_user_roles(self):
+    def get_user_roles(self):
         self.storage.set_root_path('')
         user_roles = self.storage.read_json('config', 'users.json')
         self.storage.set_root_path('images')
@@ -51,34 +51,36 @@ class Manager:
         return user_roles
 
     def is_authorized_user(self, user):
-        user_roles = self._get_user_roles()
+        user_roles = self.get_user_roles()
         return user.get_username() in list(user_roles.keys())
 
+    def is_admin(self, user):
+        user_roles = self.get_user_roles()
+        return user_roles[user.get_username()] == 'admin'
+
     @staticmethod
-    def send_request_to_recognize(self, img):
+    def send_request_to_recognize(img):
         base_url = 'http://localhost:5000/bouncer/v1/model/recognize'
         img = base64.encodebytes(img).decode('utf-8')
-        data = {
+
+        body_json = {
             'img': img
         }
 
-        response = requests.post(url=base_url, data=data)
+        response = requests.post(url=base_url, json=body_json)
+        return response.json()
 
-        return response.json
-
-    @staticmethod
     def send_request_to_train(self, people=None):
         base_url = 'http://localhost:5000/bouncer/v1/model/train'
 
         if people is None:
-            people = self._get_user_roles()
+            people = self.get_user_roles()
             people = list(people.keys())
 
-        data = {
+        body_json = {
             'people': people
         }
 
-        response = requests.post(url=base_url, data=data)
-
-        return response.json
+        response = requests.post(url=base_url, json=body_json)
+        return response.json()
 

@@ -11,6 +11,8 @@ class ReactionRecognize(ReactionBase):
     def response(self):
         if self.error_happened:
             text = "An error occurred while sending a request to Facerec"
+        elif len(self.person) == 0:
+            text = "Sorry, I couldn't find a face in this picture"
         elif self.person == 'Unknown':
             text = f"This person is {self.person}"
         else:
@@ -23,9 +25,10 @@ class ReactionRecognize(ReactionBase):
         bytes_picture = self._download_photo(file_id)
 
         response = self.me.send_request_to_recognize(
-            bytes_picture,
-            self.user.get_username()
+            bytes_picture
         ).get('response')
+
+        self.me.log.info(response)
 
         if response['status'] == 200:
             self.person = response['content']['person']

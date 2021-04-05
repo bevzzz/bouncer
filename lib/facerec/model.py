@@ -97,7 +97,7 @@ class Model:
         )
 
     def _get_most_probable_name(self, matches, tolerance=0.5):
-        name_out = 'unknown'
+        name_out = 'Unknown'
         if True not in matches:
             return name_out
         else:

@@ -69,8 +69,6 @@ class LocalStorage(Storage):
 
     def _write_file(self, file, name, to_dir, func):
         filepath = self._build_filepath(to_dir, name)
-        print(filepath)
-        print(file)
         with open(filepath, 'wb') as to_file:
             to_file.write(
                 func(file)
