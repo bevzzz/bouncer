@@ -30,7 +30,6 @@ class TelegramBot(Chatbot):
     def update_offset(self):
         try:
             self.offset = self.updates[-1]['update_id'] + 1
-            self.log.info(self.updates[-1])
         except IndexError:
             pass
 

@@ -71,6 +71,7 @@ class Manager:
         return response.json()
 
     def send_request_to_train(self, people=None):
+        # TODO: probably I should use facerec:5000 when running this from docker-compose
         base_url = 'http://localhost:5000/bouncer/v1/model/train'
 
         if people is None:
