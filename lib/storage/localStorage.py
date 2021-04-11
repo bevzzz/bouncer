@@ -34,7 +34,7 @@ class LocalStorage(Storage):
     def create_directory(self, name):
 
         if not self.exists_directory(name):
-            self.log(f"Directory {name} didn't exist, adding")
+            self.log.info(f"Directory {name} didn't exist, adding")
             filepath = self._build_filepath(name)
             os.mkdir(filepath)
 
