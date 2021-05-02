@@ -1,3 +1,5 @@
+import re
+
 from lib.utils.user import Owner
 
 
@@ -6,6 +8,7 @@ class UpdatesHandler:
     @staticmethod
     def factory(update):
         handler = UpdatesHandler()
+        # print(update)
 
         if update.get('message', False):
             handler = MessageDTO(update['message'])
@@ -59,14 +62,27 @@ class MessageDTO(UpdatesHandler):
         return self.message['message_id']
 
     def _entities(self):
-        return self.message.get('entities', '')
+        res = self.message.get('entities', {})
+        if res:
+            res = res[0]
+        return res
 
-    def get_text(self):
-        return self.message.get('text', '')
+    def get_phrase(self):
+        text = self.message.get('text', '')
+        if self.is_command():
+            text = re.sub('/', '', text)
+        return text
 
     # attachments
     def has_photo(self):
         return self._attachment_mime_type() == 'image/jpeg'
+
+    def is_command(self):
+        msg_type = self._entities().get('type', False)
+        if msg_type:
+            return msg_type == 'bot_command'
+        else:
+            return msg_type
 
     def _attachment_mime_type(self):
         if self._photo_as_photo():
@@ -116,5 +132,5 @@ class CallbackDTO(MessageDTO):
     def get_phrase(self):
         return self.callback_query.get('data', '')
 
-
-
+    def is_command(self):
+        return True
