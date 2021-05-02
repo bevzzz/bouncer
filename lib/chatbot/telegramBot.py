@@ -1,7 +1,5 @@
-from telegram import ReplyKeyboardMarkup
 from lib.chatbot.interface import Chatbot
 import requests
-import logging
 
 
 class TelegramBot(Chatbot):
@@ -32,7 +30,6 @@ class TelegramBot(Chatbot):
     def update_offset(self):
         try:
             self.offset = self.updates[-1]['update_id'] + 1
-            self.log.info(self.updates[-1])
         except IndexError:
             pass
 
@@ -45,7 +42,9 @@ class TelegramBot(Chatbot):
 
     def _get_file(self, file_id):
         req = self._build_request('getFile')
-        params = {'file_id': file_id}
+        params = {
+            'file_id': file_id
+        }
         response = requests.get(req, params).json()
         file_path = response['result']['file_path']
         return file_path
@@ -59,6 +58,14 @@ class TelegramBot(Chatbot):
     def send_message(self, message_body):
         req = self._build_request('sendMessage')
         requests.post(req, message_body).json()
+
+    def delete_message(self, chat_id, message_id):
+        req = self._build_request('deleteMessage')
+        params = {
+            'chat_id': chat_id,
+            'message_id': message_id,
+        }
+        requests.post(req, params).json()
 
     def send_file(self, file, chat_id):
         req = self._build_request('sendPhoto')

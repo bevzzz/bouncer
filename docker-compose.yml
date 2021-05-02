@@ -1,13 +1,13 @@
 version: "3.8"
 services:
   facerec:
-    image: bouncer/facerec
+    image: bevzzz/bouncer:facerec_v.1.0
     ports:
     - "5000:5000"
     volumes:
       - mydata:/home/dmytro/pycharm/bouncer/resources
   manager:
-    image: bouncer/manager
+    image: bevzzz/bouncer:manager_v.1.0
     volumes:
       - mydata:/home/dmytro/pycharm/bouncer/resources
     depends_on:

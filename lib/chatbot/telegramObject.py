@@ -60,14 +60,24 @@ class InlineKeyboardButton(TelegramObject):
 class InlineKeyboardMarkup(TelegramObject):
 
     def __init__(self, inline_keyboard):
-        self.inline_keyboard = inline_keyboard
+
+        self.inline_keyboard = []
+        for row in inline_keyboard:
+            button_row = []
+            for button in row:
+                if isinstance(button, InlineKeyboardButton):
+                    button_row.append(button)
+                else:  # passed as string
+                    button_row.append(InlineKeyboardButton(button))
+            self.inline_keyboard.append(button_row)
 
     def to_dict(self):
         data = super().to_dict()
 
         data['inline_keyboard'] = []
-        for inline_keyboard in self.inline_keyboard:
-            data['inline_keyboard'].append([x.to_dict() for x in inline_keyboard])
+        for inline_key in self.inline_keyboard:
+            inline_key = [x.to_dict() for x in inline_key]
+            data['inline_keyboard'].append(inline_key)
 
         return data
 

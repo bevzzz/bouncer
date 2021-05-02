@@ -7,11 +7,19 @@ from lib.storage.interface import Storage
 class LocalStorage(Storage):
 
     def __init__(self, root_path='images'):
-        self.root_path = os.path.join(os.getcwd(), 'resources', root_path)
+        self.root_path = os.path.join(
+            '/home/dmytro/pycharm/bouncer',
+            'resources',
+            root_path
+        )
         super().__init__()
 
     def set_root_path(self, root_path):
-        self.root_path = os.path.join(os.getcwd(), 'resources', root_path)
+        self.root_path = os.path.join(
+            '/home/dmytro/pycharm/bouncer',
+            'resources',
+            root_path
+        )
 
     def _build_filepath(self, directory='', *args):
 
@@ -34,7 +42,7 @@ class LocalStorage(Storage):
     def create_directory(self, name):
 
         if not self.exists_directory(name):
-            self.log(f"Directory {name} didn't exist, adding")
+            self.log.info(f"Directory {name} didn't exist, adding")
             filepath = self._build_filepath(name)
             os.mkdir(filepath)
 
