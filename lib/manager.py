@@ -22,7 +22,8 @@ class Manager:
             conversations = self._update_conversations()
             for conv in conversations:
                 for msg in conv.get_new_messages():
-                    self._react_to_message(msg)
+                    # self._react_to_message(msg)
+                    self._react_to_msg(msg)
 
             self.chatbot.update_offset()
 
@@ -38,10 +39,43 @@ class Manager:
         return conversations
 
     def _react_to_message(self, message):
-        reaction = ReactionFactory(message, self).get()
+        reaction = ReactionFactory(self).get(
+            message=message
+        )
         reaction.action()
         reaction.response()
         message.mark_as_read()
+
+    def _react_to_msg(self, msg):
+        if msg.has_photo():
+            file_id = msg.get_file_id()
+            photo = self.chatbot.download_file(file_id)
+        else:
+            photo = None
+
+        # TODO: get previous message
+        state = Conversation.get_previous_message(msg).get_phrase()
+
+        r = ReactionFactory(self).get(
+            message=msg,
+            photo=photo,
+            state=state
+        )
+
+        r.take_action()
+        response = r.get_response()
+        self._update_message(
+            old_msg=msg,
+            new_msg=response
+        )
+
+    def _update_message(self, old_msg, new_msg):
+
+        self.chatbot.delete_message(
+            chat_id=old_msg.get_chat_id(),
+            message_id=old_msg.get_message_id()
+        )
+        self.chatbot.send_message(new_msg)
 
     def get_user_roles(self):
         self.storage.set_root_path('')

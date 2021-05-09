@@ -38,57 +38,63 @@ class TestReactionFactory(unittest.TestCase):
         # arrange
         message = self.get_cb_with(cmd='start')
         # act
-        rf = ReactionFactory(message, manager)
+        rf = ReactionFactory(manager).get(message=message)
         # assert
-        self.assertIsInstance(rf.get(), ReactionStart)
+        self.assertIsInstance(rf, ReactionStart)
 
     def test_command_end(self):
         # arrange
         message = self.get_cb_with(cmd='end')
         # act
-        rf = ReactionFactory(message, manager)
+        rf = ReactionFactory(manager).get(message=message)
         # assert
-        self.assertIsInstance(rf.get(), ReactionEnd)
+        self.assertIsInstance(rf, ReactionEnd)
 
     def test_command_recognize(self):
         # arrange
         message = self.get_cb_with(cmd='recognize')
         # act
-        rf = ReactionFactory(message, manager)
+        rf = ReactionFactory(manager).get(message=message)
         # assert
-        self.assertIsInstance(rf.get(), ReactionDefault)
+        self.assertIsInstance(rf, ReactionDefault)
 
     def test_act_recognize_photo(self):
         # arrange
         message = self.get_msg_with(photo=True)
         # act
-        rf = ReactionFactory(message, manager)
+        rf = ReactionFactory(manager).get(
+            message=message,
+            state='recognize'
+        )
         # assert
-        self.assertIsInstance(rf.get('recognize'), ReactionRecognize)
+        self.assertIsInstance(rf, ReactionRecognize)
 
     def test_command_train(self):
         # arrange
         message = self.get_cb_with(cmd='train')
         # act
-        rf = ReactionFactory(message, manager)
+        rf = ReactionFactory(manager).get(message=message)
         # assert
-        self.assertIsInstance(rf.get(), ReactionTrainModel)
+        self.assertIsInstance(rf, ReactionTrainModel)
 
     def test_command_save_photo(self):
         # arrange
         message = self.get_cb_with(cmd='save_photo')
         # act
-        rf = ReactionFactory(message, manager)
+        rf = ReactionFactory(manager).get(message=message)
         # assert
-        self.assertIsInstance(rf.get(), ReactionDefault)
+        self.assertIsInstance(rf, ReactionDefault)
 
     def test_act_save_photo(self):
         # arrange
         message = self.get_msg_with(photo=True)
         # act
-        rf = ReactionFactory(message, manager)
+        rf = ReactionFactory(manager).get(
+            message=message,
+            state='save_photo'
+        )
         # assert
-        self.assertIsInstance(rf.get('save_photo'), ReactionDownloadPhoto)
+        self.assertIsInstance(rf, ReactionDownloadPhoto)
 
 
 if __name__ == '__main__':

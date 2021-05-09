@@ -40,6 +40,18 @@ class TelegramBot(Chatbot):
         self.updates = response.get('result', [])
         return self.updates
 
+    def send_message(self, message_body):
+        req = self._build_request('sendMessage')
+        requests.post(req, message_body).json()
+
+    def delete_message(self, chat_id, message_id):
+        req = self._build_request('deleteMessage')
+        params = {
+            'chat_id': chat_id,
+            'message_id': message_id,
+        }
+        requests.post(req, params).json()
+
     def _get_file(self, file_id):
         req = self._build_request('getFile')
         params = {
@@ -54,18 +66,6 @@ class TelegramBot(Chatbot):
         req = self._build_download_request(file_path)
         byte_array = requests.get(req).content
         return byte_array
-
-    def send_message(self, message_body):
-        req = self._build_request('sendMessage')
-        requests.post(req, message_body).json()
-
-    def delete_message(self, chat_id, message_id):
-        req = self._build_request('deleteMessage')
-        params = {
-            'chat_id': chat_id,
-            'message_id': message_id,
-        }
-        requests.post(req, params).json()
 
     def send_file(self, file, chat_id):
         req = self._build_request('sendPhoto')

@@ -13,34 +13,27 @@ from lib.chatbot.reaction.reactionTrainModel import ReactionTrainModel
 
 class ReactionFactory:
 
-    def __init__(self, message, me):
-        self.message = message
-        self.me = me
+    reactions = {
+        'start': ReactionStart,
+        'save_photo': ReactionDownloadPhoto,
+        'recognize': ReactionRecognize,
+        'train': ReactionTrainModel,
+        'end': ReactionEnd
+    }
 
-    # @staticmethod
-    # def _is_command(msg):
-    #     return re.match('/', msg)
+    def __init__(self, parent):
+        self.parent = parent
 
-    def get(self, previous_message=''):
-        msg = self.message.get_phrase()
-        if not previous_message:
-            previous_message = Conversation.get_previous_message(self.message).get_phrase()
-        user = self.message.get_author()
-
-        if previous_message == 'recognize':
-            print('previous_message')
-            print(previous_message)
-            print('self.message.has_photo()')
-            print(self.message.has_photo())
-            print('self.message.is_command()')
-            print(self.message.is_command())
+    def get(self, message=None, photo=None, state=None):
+        msg = message.get_phrase()
+        user = message.get_author()
 
         params = {
-            'message': self.message,
-            'me': self.me
+            'message': message,
+            'me': self.parent
         }
 
-        if self.message.is_command():
+        if message.is_command():
 
             if msg == 'start':
                 reaction = ReactionStart
@@ -53,17 +46,40 @@ class ReactionFactory:
             else:
                 reaction = ReactionCommandUnknown
 
-        elif self.message.has_photo():
+        elif message.has_photo():
 
-            if self.me.is_authorized_user(user):
-                if previous_message == 'recognize':
+            if self.parent.is_authorized_user(user):
+                if state == 'recognize':
                     reaction = ReactionRecognize
-                elif previous_message == 'save_photo':
+                elif state == 'save_photo':
                     reaction = ReactionDownloadPhoto
                 else:
                     reaction = ReactionDefault
             else:
                 reaction = ReactionNotAuthorized
+        else:
+            reaction = ReactionDefault
+
+        return reaction(**params)
+
+    def _get(self, message=None, photo=None, state=None):
+
+        text = message.get_phrase()
+        params = {
+            'message': message,
+            'me': self.parent,
+            'options': None
+        }
+
+        if text in self.reactions:
+            reaction = self.reactions[text]
+
+            if photo is not None:
+                params['options']['photo'] = photo
+
+            if state is not None:
+                params['options']['state'] = state
+
         else:
             reaction = ReactionDefault
 

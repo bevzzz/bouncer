@@ -5,7 +5,7 @@ from lib.chatbot.telegramObject import TextMessage, InlineKeyboardButton, Inline
 
 class ReactionBase(metaclass=ABCMeta):
 
-    def __init__(self, message, me):
+    def __init__(self, message, me, options={}):
         self.message = message
         self.me = me
         self.user = message.get_author()
@@ -18,36 +18,21 @@ class ReactionBase(metaclass=ABCMeta):
     def action(self):
         pass
 
-    def _send_message(self, msg, keys=None):
+    def build_message(self, msg, keys=None):
 
         message_out = TextMessage(
             text=msg,
             chat_id=self.message.get_chat_id(),
             reply_markup=self._build_keyboard(keys)
         )
+        return message_out.to_dict()
 
-        self.me.chatbot.send_message(message_out.to_dict())
-
-    def update_message(self, new_msg, keys):
-
-        self.me.chatbot.delete_message(
-            chat_id=self.message.get_chat_id(),
-            message_id=self.message.get_message_id()
-        )
-
-        self._send_message(
-            msg=new_msg,
-            keys=keys
-        )
-
-    def _build_keyboard(self, keys, rows=1):
+    def _build_keyboard(self, keys, ncol=1):
 
         if keys is None:
             return None
 
-        # TODO: wrap in an additional list before passing to InlineKeyboardMarkup
         # TODO: arrange buttons in rows
-
         keyboard = []
         for key in keys:
 
@@ -68,3 +53,13 @@ class ReactionBase(metaclass=ABCMeta):
 
         key = re.sub(" ", "_", key)
         return key.lower()
+
+    def _send_message(self, msg, keys=None):
+
+        message_out = TextMessage(
+            text=msg,
+            chat_id=self.message.get_chat_id(),
+            reply_markup=self._build_keyboard(keys)
+        )
+
+        self.me.chatbot.send_message(message_out.to_dict())

@@ -8,6 +8,18 @@ class ReactionTrainModel(ReactionBase):
         self.error_happened = False
         self.message_contents = None
 
+    def take_action(self):
+        self.action()
+
+    def get_response(self):
+        if self.error_happened:
+            text = "An error occurred while sending a request to FacerecTrain"
+        else:
+            text = f"{self.message_contents['message']}. " \
+                   f"The training set has {self.message_contents['image_count']} pictures"
+
+        return self.build_message(text)
+
     def response(self):
         if self.error_happened:
             text = "An error occurred while sending a request to FacerecTrain"
@@ -30,6 +42,3 @@ class ReactionTrainModel(ReactionBase):
             self.message_contents = response['content']
         else:
             self.error_happened = True
-
-    def _download_photo(self, file_id):
-        return self.me.chatbot.download_file(file_id)

@@ -8,6 +8,21 @@ class ReactionRecognize(ReactionBase):
         self.person = 'Unknown'
         self.error_happened = False
 
+    def take_action(self):
+        self.action()
+
+    def get_response(self):
+        if self.error_happened:
+            text = "An error occurred while sending a request to Facerec"
+        elif len(self.person) == 0:
+            text = "Sorry, I couldn't find a face in this picture"
+        elif self.person == 'Unknown':
+            text = f"This person is {self.person}"
+        else:
+            text = f"I see {self.person}"
+
+        return self.build_message(text)
+
     def response(self):
         if self.error_happened:
             text = "An error occurred while sending a request to Facerec"

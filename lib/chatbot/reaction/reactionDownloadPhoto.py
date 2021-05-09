@@ -4,9 +4,27 @@ from lib.utils.helpers import get_timestamp
 
 class ReactionDownloadPhoto(ReactionBase):
 
-    def __init__(self, message, me):
+    command = 'save_photo'
+
+    def __init__(self, message, me, options={}):
         super().__init__(message, me)
         self.upload_successful = False
+        self.photo = options.get('photo')
+        self.state = options.get('state')
+
+    def take_action(self):
+        if self.state != self.command:
+            pass
+        else:
+            self.action()
+
+    def get_response(self):
+        if self.upload_successful:
+            text = "Nice pic! I added it to your personal folder"
+        else:
+            text = "Oh crap, I couldn't download that. Try again with a different photo"
+
+        return self.build_message(text)
 
     def response(self):
         if self.upload_successful:
