@@ -1,5 +1,6 @@
 from lib.chatbot.interface import Chatbot
 import requests
+import logging
 
 
 class TelegramBot(Chatbot):
@@ -12,6 +13,8 @@ class TelegramBot(Chatbot):
         self.base_url = self._build_base_url()
         self.offset = 0
         self.updates = {}
+
+        self.log = logging.getLogger()
 
     def _build_base_url(self):
         return '{}/bot{}'.format(self.host_url, self.token)

@@ -1,29 +1,22 @@
 from lib.chatbot.state.conversationState import ConversationState
-from lib.chatbot.state.stateAwait import StateAwait
 
 
-class StateMain(ConversationState):
+class StateUnknownInput(ConversationState):
 
     buttons = {
         "recognize": {
             "label": "Recognize",
-            "row": 1,
-            "next": StateAwait
+            "row": 1
         },
         "add_photo": {
             "label": "Add photo",
-            "row": 1,
-            "next": StateAwait
+            "row": 1
         },
         "end": {
             "label": "Exit",
-            "row": 2,
-            "next": None
+            "row": 2
         }
     }
-
-    def __init__(self, context):
-        super().__init__(context)
 
     def invoke(self, params):
         pass
@@ -39,5 +32,6 @@ class StateMain(ConversationState):
 
         return self.build_message(text=text)
 
-    def set_next_state(self):
-        super().set_next_state()
+    def change_state(self):
+        pass
+

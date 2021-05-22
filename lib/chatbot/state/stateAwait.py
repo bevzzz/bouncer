@@ -1,4 +1,6 @@
 from lib.chatbot.state.conversationState import ConversationState
+from lib.chatbot.state.stateRecognize import StateRecognize
+from lib.chatbot.state.stateAddPhoto import StateAddPhoto
 
 
 class StateAwait(ConversationState):
@@ -6,7 +8,8 @@ class StateAwait(ConversationState):
     buttons = {
         "back": {
             "label": "Back",
-            "row": 1
+            "row": 1,
+            "next": None
         }
     }
 
@@ -18,19 +21,25 @@ class StateAwait(ConversationState):
         self.msg = params.get("msg")
 
     def act(self):
-
-        if self.msg == "recognize":
-            state = StateRecognize(self.__context)
-        elif self.msg == "add_photo":
-            state = StateAddPhoto(self.__context)
-        else:
-            state = None
-
-        self.__context.changeState(state)
+        pass
 
     def get_response(self):
+        return self.build_message(text="waiting...")
 
-        return self.build_message(
-            text="waiting...",
-            buttons=self.buttons
-        )
+    def set_next_state(self):
+        if self._context.update.get_phrase() in self.buttons:
+            super().set_next_state()
+        else:
+            self._set_next_state()
+
+    def _set_next_state(self):
+        if self.msg == "recognize":
+            state = StateRecognize(self._context)
+        elif self.msg == "add_photo":
+            state = StateAddPhoto(self._context)
+        else:
+            state = self
+
+        self._context.change_state(state)
+
+

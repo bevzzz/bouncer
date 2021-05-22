@@ -1,14 +1,21 @@
 import abc
 import collections
+import logging
 
 from lib.chatbot.telegramObject import TextMessage, InlineKeyboardButton, InlineKeyboardMarkup
 
 
 class ConversationState(metaclass=abc.ABCMeta):
-    __context = None
+
+    buttons = None
 
     def __init__(self, context):
-        self.__context = context
+        self.log = logging.getLogger()
+        if context is None:
+            self.log.error(f"No context provided for {self}")
+            raise RuntimeError
+        else:
+            self._context = context
 
     @abc.abstractmethod
     def invoke(self, params):
@@ -22,9 +29,28 @@ class ConversationState(metaclass=abc.ABCMeta):
     def get_response(self):
         pass
 
-    def build_message(self, text, buttons=None):
-        chat_id = self.__context.update.get_chat_id()
-        reply_markup = self.add_keyboard(buttons)
+    @abc.abstractmethod
+    def set_next_state(self):
+        msg = self._context.update.get_phrase()
+        state = self.buttons[msg]['next']
+
+        print(state)
+        if state is None:
+            state = self._context.last_state
+        else:
+            state = state(self._context)
+        print(state)
+
+        self._context.change_state(state)
+
+    def process(self):
+        self.act()
+        self.set_next_state()
+        return self.get_response()
+
+    def build_message(self, text):
+        chat_id = self._context.update.get_chat_id()
+        reply_markup = self.add_keyboard(self.buttons)
 
         message_out = TextMessage(
             text=text,
@@ -53,5 +79,5 @@ class ConversationState(metaclass=abc.ABCMeta):
                 )
             )
 
-        keyboard = [i[0] for i in sorted(keyboard.items())]
+        keyboard = [i[1] for i in sorted(keyboard.items())]
         return InlineKeyboardMarkup(keyboard)

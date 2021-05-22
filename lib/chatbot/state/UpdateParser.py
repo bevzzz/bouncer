@@ -7,14 +7,16 @@ class UpdateParser:
 
     @staticmethod
     def factory(update):
-        handler = UpdateParser()
-        # print(update)
 
         if update.get('message', False):
             handler = MessageDTO(update['message'])
 
         elif update.get('callback_query', False):
             handler = CallbackDTO(update['callback_query'])
+
+        else:
+            key = list(update.keys())[1]
+            raise LookupError(f"Unknown update type: {key}")
 
         return handler
 

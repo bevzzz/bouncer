@@ -1,5 +1,7 @@
-from lib.chatbot.reaction.reactionFactory import ReactionFactory
-from lib.chatbot.conversation import Conversation
+# from lib.chatbot.reaction.reactionFactory import ReactionFactory
+# from lib.chatbot.conversation import Conversation
+from lib.chatbot.state.conversationContext import ConversationContext
+from lib.chatbot.state.UpdateParser import UpdateParser
 import logging
 import time
 import base64
@@ -14,68 +16,103 @@ class Manager:
         self.conversations = []
         self.log = logging.getLogger()
 
+    # def talk(self):
+    #     self.log.info("start talk()")
+    #
+    #     while True:
+    #
+    #         conversations = self._update_conversations()
+    #         for conv in conversations:
+    #             for msg in conv.get_new_messages():
+    #                 # self._react_to_message(msg)
+    #                 self._react_to_msg(msg)
+    #
+    #         self.chatbot.update_offset()
+    #
+    #         time.sleep(1)
+    #
+    # def _update_conversations(self):
+    #     updates = self.chatbot.get_updates()
+    #     conversations = Conversation.open_conversations(updates)
+    #
+    #     for conv in conversations:
+    #         self.conversations.append(conv)
+    #
+    #     return conversations
+    #
+    # def _react_to_message(self, message):
+    #     reaction = ReactionFactory(self).get(
+    #         message=message
+    #     )
+    #     reaction.action()
+    #     reaction.response()
+    #     message.mark_as_read()
+    #
+    # def _react_to_msg(self, msg):
+    #     if msg.has_photo():
+    #         file_id = msg.get_file_id()
+    #         photo = self.chatbot.download_file(file_id)
+    #     else:
+    #         photo = None
+    #
+    #     # TODO: get previous message
+    #     state = Conversation.get_previous_message(msg).get_phrase()
+    #
+    #     r = ReactionFactory(self).get(
+    #         message=msg,
+    #         photo=photo,
+    #         state=state
+    #     )
+    #
+    #     r.take_action()
+    #     response = r.get_response()
+    #     self._update_message(
+    #         old_msg=msg,
+    #         new_msg=response
+    #     )
+    #
+    # def _update_message(self, old_msg, new_msg):
+    #
+    #     self.chatbot.delete_message(
+    #         chat_id=old_msg.get_chat_id(),
+    #         message_id=old_msg.get_message_id()
+    #     )
+    #     self.chatbot.send_message(new_msg)
+
     def talk(self):
         self.log.info("start talk()")
 
         while True:
+            updates = self.chatbot.get_updates()
 
-            conversations = self._update_conversations()
-            for conv in conversations:
-                for msg in conv.get_new_messages():
-                    # self._react_to_message(msg)
-                    self._react_to_msg(msg)
+            for update in updates:
+
+                try:
+                    update = UpdateParser.factory(update)
+                    self.log.info(
+                        f"new message from {update.get_author().get_username()}"
+                    )
+
+                    conversation = ConversationContext.open(self, update)
+                    conversation.reply()
+
+                except LookupError as err:
+                    self.log.warning(err)
 
             self.chatbot.update_offset()
 
-            time.sleep(1)
+    def update_message(self, to_delete, to_send):
+        # self.log.info(
+        #     f"update_message(): \n"
+        #     f"deleting: {to_delete.get_message_id()} \n"
+        #     f"sending: {to_send}"
+        # )
 
-    def _update_conversations(self):
-        updates = self.chatbot.get_updates()
-        conversations = Conversation.open_conversations(updates)
-
-        for conv in conversations:
-            self.conversations.append(conv)
-
-        return conversations
-
-    def _react_to_message(self, message):
-        reaction = ReactionFactory(self).get(
-            message=message
-        )
-        reaction.action()
-        reaction.response()
-        message.mark_as_read()
-
-    def _react_to_msg(self, msg):
-        if msg.has_photo():
-            file_id = msg.get_file_id()
-            photo = self.chatbot.download_file(file_id)
-        else:
-            photo = None
-
-        # TODO: get previous message
-        state = Conversation.get_previous_message(msg).get_phrase()
-
-        r = ReactionFactory(self).get(
-            message=msg,
-            photo=photo,
-            state=state
-        )
-
-        r.take_action()
-        response = r.get_response()
-        self._update_message(
-            old_msg=msg,
-            new_msg=response
-        )
-
-    def _update_message(self, old_msg, new_msg):
-
-        self.chatbot.delete_message(
-            chat_id=old_msg.get_chat_id(),
-            message_id=old_msg.get_message_id()
-        )
-        self.chatbot.send_message(new_msg)
+        # self.chatbot.delete_message(
+        #     chat_id=to_delete.get_chat_id(),
+        #     message_id=to_delete.get_message_id()
+        # )
+        self.chatbot.send_message(to_send)
 
     def get_user_roles(self):
         self.storage.set_root_path('')
