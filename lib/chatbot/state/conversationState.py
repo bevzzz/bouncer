@@ -79,3 +79,6 @@ class ConversationState(metaclass=abc.ABCMeta):
 
         keyboard = [i[1] for i in sorted(keyboard.items())]
         return InlineKeyboardMarkup(keyboard)
+
+    def download_photo(self):
+        return self._context.download_photo()

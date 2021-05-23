@@ -18,7 +18,7 @@ class StateRecognize(ConversationState):
         super().__init__(context)
 
     def invoke(self, params):
-        self.photo = params.get("photo")
+        self.photo = self.download_photo()
 
     def act(self):
         response = self._context.parent.send_request_to_recognize(

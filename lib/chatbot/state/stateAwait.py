@@ -1,5 +1,8 @@
 from lib.chatbot.state.conversationState import ConversationState
 
+from lib.chatbot.state.stateRecognize import StateRecognize
+from lib.chatbot.state.stateAddPhoto import StateAddPhoto
+
 
 class StateAwait(ConversationState):
 
@@ -16,7 +19,7 @@ class StateAwait(ConversationState):
         super().__init__(context)
 
     def invoke(self, params):
-        self.msg = params.get("msg")
+        self.msg = self._context.update.get_phrase()
 
     def act(self):
         pass

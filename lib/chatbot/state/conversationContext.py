@@ -46,18 +46,15 @@ class ConversationContext:
         if self._state is None:
             self.change_state(StateMain(self))
 
-        # pass necessary parameters
-        params = {
-            # TODO: pass params elegantly
-        }
-        self._state.invoke(params)
-
         # handle states
         if self.update.get_phrase() != 'start':
             last_state = self._state
             self._state.set_next_state()
             self.last_state = last_state
 
+        # pass necessary parameters
+        params = {}
+        self._state.invoke(params)
         # execute command
         self._state.act()
 
@@ -72,3 +69,8 @@ class ConversationContext:
 
     def change_state(self, state):
         self._state = state
+
+    def download_photo(self):
+        file_id, caption = self.update.get_picture_with_caption()
+        photo = self.parent.chatbot.download_file(file_id)
+        return photo
