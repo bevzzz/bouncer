@@ -4,9 +4,10 @@ from lib.chatbot.state.conversationState import ConversationState
 class StateRecognize(ConversationState):
 
     buttons = {
-        "start": {
+        "main": {
             "label": "Back to main",
-            "row": 1
+            "row": 1,
+            "next": "StateMain"
         }
     }
 
@@ -44,5 +45,5 @@ class StateRecognize(ConversationState):
     def _unknown_person(self):
         return self.people_in_photo[0] == 'Unknown'
 
-    def change_state(self):
-        self._context.changeState(None)
+    def set_next_state(self):
+        super().set_next_state()

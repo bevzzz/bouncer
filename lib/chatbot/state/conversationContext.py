@@ -2,18 +2,17 @@ import logging
 
 from lib.chatbot.state.stateMain import StateMain
 from lib.chatbot.state.stateAwait import StateAwait
-from lib.chatbot.state.stateTrain import StateTrain
-from lib.chatbot.state.stateUnknownInput import StateUnknownInput
+from lib.chatbot.state.stateRecognize import StateRecognize
+from lib.chatbot.state.stateAddPhoto import StateAddPhoto
 
 
 class ConversationContext:
 
-    _state_library = {
-        "need_wait": ["recognize", "add_photo"],
-        "no_wait": {
-            "start": StateMain,
-            "train": StateTrain,
-        }
+    states = {
+        "StateMain": StateMain,
+        "StateAwait": StateAwait,
+        "StateRecognize": StateRecognize,
+        "StateAddPhoto": StateAddPhoto,
     }
 
     _instances = {}
@@ -73,14 +72,3 @@ class ConversationContext:
 
     def change_state(self, state):
         self._state = state
-
-    def _factory(self, msg=None):
-        if msg == 'back':
-            return self.last_state
-
-        if msg in self._state_library["need_wait"]:
-            state = StateAwait
-        else:
-            state = self._state_library["no_wait"].get(msg, StateUnknownInput)
-
-        return state

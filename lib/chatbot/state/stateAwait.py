@@ -1,6 +1,4 @@
 from lib.chatbot.state.conversationState import ConversationState
-from lib.chatbot.state.stateRecognize import StateRecognize
-from lib.chatbot.state.stateAddPhoto import StateAddPhoto
 
 
 class StateAwait(ConversationState):
@@ -9,7 +7,7 @@ class StateAwait(ConversationState):
         "back": {
             "label": "Back",
             "row": 1,
-            "next": None
+            "next": 'last_state'
         }
     }
 

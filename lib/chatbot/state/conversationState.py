@@ -1,8 +1,9 @@
 import abc
 import collections
 import logging
-
+# message elements
 from lib.chatbot.telegramObject import TextMessage, InlineKeyboardButton, InlineKeyboardMarkup
+# states
 
 
 class ConversationState(metaclass=abc.ABCMeta):
@@ -32,21 +33,18 @@ class ConversationState(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def set_next_state(self):
         msg = self._context.update.get_phrase()
-        state = self.buttons[msg]['next']
+        n = self.buttons[msg]['next']
 
-        print(state)
-        if state is None:
+        if n is None:
+            state = self
+        elif n == 'last_state':
             state = self._context.last_state
         else:
+            # add error handling
+            state = self._context.states.get(n, self._context.last_state)
             state = state(self._context)
-        print(state)
 
         self._context.change_state(state)
-
-    def process(self):
-        self.act()
-        self.set_next_state()
-        return self.get_response()
 
     def build_message(self, text):
         chat_id = self._context.update.get_chat_id()

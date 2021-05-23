@@ -1,5 +1,4 @@
 from lib.chatbot.state.conversationState import ConversationState
-from lib.chatbot.state.stateAwait import StateAwait
 
 
 class StateMain(ConversationState):
@@ -8,12 +7,12 @@ class StateMain(ConversationState):
         "recognize": {
             "label": "Recognize",
             "row": 1,
-            "next": StateAwait
+            "next": "StateAwait"
         },
         "add_photo": {
             "label": "Add photo",
             "row": 1,
-            "next": StateAwait
+            "next": "StateAwait"
         },
         "end": {
             "label": "Exit",
