@@ -74,3 +74,10 @@ class ConversationContext:
         file_id, caption = self.update.get_picture_with_caption()
         photo = self.parent.chatbot.download_file(file_id)
         return photo
+
+    def store_photo(self, photo, name, to_dir):
+        self.parent.storage.write_image(
+            img=photo,
+            name=name,
+            to_dir=to_dir
+        )

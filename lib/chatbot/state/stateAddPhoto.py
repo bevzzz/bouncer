@@ -4,35 +4,40 @@ from lib.chatbot.state.conversationState import ConversationState
 class StateAddPhoto(ConversationState):
 
     buttons = {
-        "recognize": {
-            "label": "Recognize",
-            "row": 1
-        },
         "add_photo": {
-            "label": "Add photo",
-            "row": 1
+            "label": "Try again",
+            "row": 1,
+            "next": "StateAwait"
         },
-        "end": {
-            "label": "Exit",
-            "row": 2
+        "main": {
+            "label": "Back to main",
+            "row": 2,
+            "next": "StateMain"
         }
     }
 
+    def __init__(self, context):
+        self.photo = None
+        self.error_happened = False
+        super().__init__(context)
+
     def invoke(self, params):
-        pass
+        self.photo = self.download_photo()
 
     def act(self):
-        pass
+        try:
+            self.store_photo(self.photo)
+        except AttributeError as err:
+            self.log.warning(err)
+            self.error_happened = True
 
     def get_response(self):
-        name = "User"
-        text = f"How can I help you, {name}?"
-
-        # TODO: add Train button if the user has the right permission
+        if not self.error_happened:
+            text = "Nice pic! I added it to your personal folder"
+        else:
+            text = "Oh crap, I couldn't download that. Try again with a different photo"
 
         return self.build_message(text=text)
 
-    def change_state(self):
-        pass
-
-
+    def set_next_state(self):
+        super().set_next_state()

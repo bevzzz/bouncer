@@ -4,6 +4,11 @@ from lib.chatbot.state.conversationState import ConversationState
 class StateRecognize(ConversationState):
 
     buttons = {
+        "recognize": {
+            "label": "Try different photo",
+            "row": 1,
+            "next": "StateAwait"
+        },
         "main": {
             "label": "Back to main",
             "row": 1,

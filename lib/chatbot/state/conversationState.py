@@ -3,7 +3,8 @@ import collections
 import logging
 # message elements
 from lib.chatbot.telegramObject import TextMessage, InlineKeyboardButton, InlineKeyboardMarkup
-# states
+
+from lib.utils.helpers import get_timestamp
 
 
 class ConversationState(metaclass=abc.ABCMeta):
@@ -82,3 +83,13 @@ class ConversationState(metaclass=abc.ABCMeta):
 
     def download_photo(self):
         return self._context.download_photo()
+
+    def store_photo(self, photo):
+        username = self._context.update.get_author().get_username()
+        name = f"{username}_{get_timestamp()}"
+
+        self._context.store_photo(
+            photo=photo,
+            name=name,
+            to_dir=username
+        )
