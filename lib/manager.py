@@ -101,18 +101,18 @@ class Manager:
 
             self.chatbot.update_offset()
 
-    def update_message(self, to_delete, to_send):
-        # self.log.info(
-        #     f"update_message(): \n"
-        #     f"deleting: {to_delete.get_message_id()} \n"
-        #     f"sending: {to_send}"
-        # )
+    def update_message(self, chat_id, to_delete_id, to_send):
+        self.log.info(
+            f"update_message(): \n"
+            f"deleting: {to_delete_id} \n"
+            f"sending: {to_send}"
+        )
 
-        # self.chatbot.delete_message(
-        #     chat_id=to_delete.get_chat_id(),
-        #     message_id=to_delete.get_message_id()
-        # )
-        self.chatbot.send_message(to_send)
+        self.chatbot.delete_message(
+            chat_id=chat_id,
+            message_id=to_delete_id
+        )
+        return self.chatbot.send_message(to_send)
 
     def get_user_roles(self):
         self.storage.set_root_path('')

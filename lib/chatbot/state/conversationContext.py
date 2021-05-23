@@ -64,10 +64,12 @@ class ConversationContext:
 
         # update ui
         response = self._state.get_response()
-        self.parent.update_message(
-            to_delete=self.update,
+        msg_id = self.parent.update_message(
+            chat_id=self.update.get_chat_id(),
+            to_delete_id=self._last_message_id,
             to_send=response
         )
+        self._last_message_id = msg_id
 
     def change_state(self, state):
         self._state = state

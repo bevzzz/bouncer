@@ -1,4 +1,5 @@
 from lib.chatbot.interface import Chatbot
+from lib.chatbot.state.UpdateParser import UpdateParser
 import requests
 import logging
 
@@ -45,7 +46,8 @@ class TelegramBot(Chatbot):
 
     def send_message(self, message_body):
         req = self._build_request('sendMessage')
-        requests.post(req, message_body).json()
+        res = requests.post(req, message_body).json()
+        return res['result']['message_id']
 
     def delete_message(self, chat_id, message_id):
         req = self._build_request('deleteMessage')
