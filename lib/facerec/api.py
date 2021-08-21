@@ -1,4 +1,4 @@
-# Third-party
+# Third-party libraries
 import flask as f
 import flask_restx as fx
 from werkzeug.datastructures import FileStorage
@@ -21,17 +21,28 @@ ns = api.namespace("facerec")
 
 # Set up request parsing
 parser = fx.reqparse.RequestParser()
-parser.add_argument(
+
+# Define a parser for the Recognize endpoint
+recognize_parser = parser.copy()
+recognize_parser.add_argument(
     "file",
     location='files',
     type=FileStorage,
     required=True
 )
 
+# Define parser for Train endpoint
+train_parser = parser.copy()
+train_parser.add_argument(
+    "for_names",
+    location="json",
+    type=list
+)
+
 
 # Create dependencies
 recognizer = Recognizer()
-print("WORKING")
+
 
 # Define endpoint
 @ns.route("/recognize")
@@ -40,11 +51,20 @@ class RecognizeEndpoint(fx.Resource):
     def get(self):
         return {"healthcheck": "I'm good"}
 
-
-    @ns.expect(parser)
+    @ns.expect(recognize_parser)
     def post(self):
-        args = parser.parse_args()
+        args = recognize_parser.parse_args()
         uploaded_file = args["file"]
         img_bytes = uploaded_file.stream.read()
         person = recognizer.recognize(img_bytes)
         return person, 200
+
+
+@ns.route("/train")
+class TrainEndpoint(fx.Resource):
+
+    @ns.expect(train_parser)
+    def post(self):
+        args = train_parser.parse_args()
+        ok = recognizer.train(args["for_names"])
+        return ok, 200
