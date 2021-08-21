@@ -1,9 +1,14 @@
+# Built-in libraries
 import io
-
-import face_recognition
 import numpy as np
+
+# Third-party libraries
+import face_recognition
 from PIL import Image
+
+# Local libraries
 from lib.facerec.encode import Encoder
+from lib.model.person import Person
 
 
 RGB = "RGB"
@@ -76,11 +81,11 @@ class Recognizer:
     def recognize(self, img_bytes):
 
         if self._encodings is None or self._names is None:
-            return None
+            return Person()
 
         arr = self._prepare_for_encoding(img_bytes)
         encoded_img = self.encoder.encode(arr)
         matches = self._find_matches(encoded_img)
         name, reason = self._determine_the_match(matches)
 
-        # return person
+        return Person(name)
