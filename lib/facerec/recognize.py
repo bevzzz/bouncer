@@ -100,7 +100,11 @@ class Recognizer:
 
         arr = self._prepare_for_encoding(img_bytes)
         encoded_img = self.encoder.encode(arr)
-        matches = self._find_matches(encoded_img)
+
+        if len(encoded_img) > 1:
+            raise RuntimeError("Images with multiple faces are not supported")
+
+        matches = self._find_matches(encoded_img[0])
         name, reason = self._determine_the_match(matches)
 
         return Person(name)

@@ -1,3 +1,7 @@
+# Build-in libraries
+import os
+import pickle
+
 # Third-party libraries
 import flask as f
 import flask_restx as fx
@@ -31,6 +35,13 @@ recognize_parser.add_argument(
     required=True
 )
 
+# Define response model
+recognize_response = ns.model(
+    "Recognition", {
+        "username": fx.fields.String
+    }
+)
+
 # Define parser for Train endpoint
 train_parser = parser.copy()
 train_parser.add_argument("for_names", location="json", type=list)
@@ -39,7 +50,13 @@ train_parser.add_argument("set_new", location="json", type=fx.inputs.boolean)
 
 
 # Create dependencies
-recognizer = Recognizer()
+encodings_path = "/home/dmytro/pycharm/bouncer/resources/model/encodings.pickle"
+if os.path.exists(encodings_path):
+    with open(encodings_path, "rb") as rb:
+        known_encodings = pickle.load(rb)
+else:
+    known_encodings = None
+recognizer = Recognizer(known=known_encodings)
 
 
 # Define endpoint
@@ -50,6 +67,7 @@ class RecognizeEndpoint(fx.Resource):
         return {"healthcheck": "I'm good"}
 
     @ns.expect(recognize_parser)
+    @ns.marshal_with(recognize_response)
     def post(self):
         args = recognize_parser.parse_args()
         uploaded_file = args["file"]
