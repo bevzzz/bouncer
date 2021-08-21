@@ -1,5 +1,8 @@
 # Built-in libraries
 import io
+import os
+import pickle
+
 import numpy as np
 
 # Third-party libraries
@@ -16,7 +19,10 @@ RGB = "RGB"
 
 class Recognizer:
 
-    def __init__(self, known=None, method='hog', tolerance=0.6):
+    _image_dir = os.path.join("/home/dmytro/pycharm/bouncer/resources/images/")
+    _encodings_dir = os.path.join("/home/dmytro/pycharm/bouncer/resources/model/")
+
+    def __init__(self, known=None, method='hog', tolerance=0.6, testing=False):
 
         self._names = None
         self._encodings = None
@@ -27,6 +33,15 @@ class Recognizer:
         self.method = method
         self.tolerance = tolerance
         self.encoder = Encoder(self.method)
+
+        self._testing = testing
+
+    @property
+    def known(self):
+        return {
+            "encodings": self._encodings,
+            "names": self._names
+        }
 
     def set_known(self, known):
         self._names = known["names"]
@@ -89,3 +104,50 @@ class Recognizer:
         name, reason = self._determine_the_match(matches)
 
         return Person(name)
+
+    def train(self, names, save_new=False, set_new=False):
+
+        existing_folders = os.listdir(self._image_dir)
+        if not all(n in existing_folders for n in names):
+            return False
+
+        # initialize lists for encodings
+        known_encodings = []
+        known_names = []
+
+        for n in names:
+
+            dir_path = os.path.join(self._image_dir, n)
+            images = os.listdir(dir_path)
+
+            for img in images:
+                img_path = os.path.join(self._image_dir, n, img)
+                with open(img_path, "rb") as b:
+                    img_bytes = b.read()
+                    arr = self._prepare_for_encoding(img_bytes)
+                    encoded_img = self.encoder.encode(arr)
+
+                    for e in encoded_img:
+                        known_encodings.append(e)
+                        known_names.append(n)
+
+        known = {
+            "encodings": known_encodings,
+            "names": known_names
+        }
+
+        if save_new:
+
+            if self._testing:
+                filename = "encodings_test.pickle"
+            else:
+                filename = "encodings.pickle"
+
+            path = os.path.join(self._encodings_dir, filename)
+            with open(path, "wb") as wb:
+                pickle.dump(known, wb)
+
+        if set_new:
+            self.set_known(known)
+
+        return True
