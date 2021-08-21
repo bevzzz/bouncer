@@ -33,11 +33,9 @@ recognize_parser.add_argument(
 
 # Define parser for Train endpoint
 train_parser = parser.copy()
-train_parser.add_argument(
-    "for_names",
-    location="json",
-    type=list
-)
+train_parser.add_argument("for_names", location="json", type=list)
+train_parser.add_argument("save_new", location="json", type=fx.inputs.boolean)
+train_parser.add_argument("set_new", location="json", type=fx.inputs.boolean)
 
 
 # Create dependencies
@@ -66,5 +64,9 @@ class TrainEndpoint(fx.Resource):
     @ns.expect(train_parser)
     def post(self):
         args = train_parser.parse_args()
-        ok = recognizer.train(args["for_names"])
+        ok = recognizer.train(
+            names=args["for_names"],
+            save_new=args["save_new"],
+            set_new=args["set_new"]
+        )
         return ok, 200
