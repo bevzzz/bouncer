@@ -1,18 +1,23 @@
-import unittest
+# Build-in libraries
+import os
 
+# Third-party libraries
+import unittest
 import numpy as np
 from PIL import Image
+
+# Local libraries
 from lib.facerec.recognize import Recognizer
 from lib.facerec.encode import Encoder
 
 
 class TestRecognizer(unittest.TestCase):
 
-    test_img_path = "/lib/facerec/tests/bin/dannydevito.png"
+    test_img_path = "/home/dmytro/pycharm/bouncer/lib/facerec/tests/bin/dannydevito.png"
 
     @classmethod
     def setUpClass(cls):
-        cls.r = Recognizer()
+        cls.r = Recognizer(testing=True)
 
     def tearDown(self):
         self.r.set_known({"names": None, "encodings": None})
@@ -27,7 +32,7 @@ class TestRecognizer(unittest.TestCase):
 
     def get_known_list(self, ntrue=1, nfalse=1):
         nd, encd = self.get_encodings("Danny Devito")
-        na, enca = self.get_encodings("Arnold", "/lib/facerec/tests/bin/schwarz.jpg")
+        na, enca = self.get_encodings("Arnold", "/home/dmytro/pycharm/bouncer/lib/facerec/tests/bin/schwarz.jpg")
         names = [nd]*ntrue + [na]*nfalse
         encodings = encd*ntrue + enca*nfalse
         return {"encodings": encodings, "names": names}
@@ -102,7 +107,7 @@ class TestRecognizer(unittest.TestCase):
         known_encodings = self.get_known_list(ntrue=4, nfalse=6)
         self.r.set_known(known_encodings)
         # act
-        person = self.r._determine_the_match(matches)
+        person, reason = self.r._determine_the_match(matches)
         # assert
         self.assertEqual(person, "Danny Devito")
 
@@ -112,15 +117,46 @@ class TestRecognizer(unittest.TestCase):
         # act
         person = self.r.recognize(imgb)
         # assert
-        self.assertIsNone(person)
+        self.assertIsNone(person.username)
 
-    # def test_recognizes_danny(self):
-    #     # arrange
-    #     imgb = self.get_bytes_image()
-    #     known_encodings = self.get_known_list()
-    #     self.r.set_known(known_encodings)
-    #     # act
-    #     person = self.r.recognize(imgb)
-    #     # assert
-    #     self.assertEqual(person, "Danny Devito")
+    def recognizes_danny(self):
+        # arrange
+        imgb = self.get_bytes_image()
+        known_encodings = self.get_known_list()
+        self.r.set_known(known_encodings)
+        # act
+        person = self.r.recognize(imgb)
+        # assert
+        self.assertEqual(person.username, "Danny Devito")
 
+    def test_dont_train_with_unknown_names(self):
+        # arrange
+        for_names = ["bevzzz", "testname"]
+        # act
+        ok = self.r.train(for_names)
+        # assert
+        self.assertFalse(ok)
+
+    def test_train_saves_new(self):
+        # arrange
+        for_names = ["bevzzz"]
+        # act
+        ok = self.r.train(
+            names=for_names,
+            save_new=True
+        )
+        # assert
+        self.assertTrue(ok)
+        self.assertTrue(os.path.exists("/home/dmytro/pycharm/bouncer/resources/model/encodings.pickle"))
+
+    def test_sets_known(self):
+        # arrange
+        for_names = ["bevzzz"]
+        # act
+        ok = self.r.train(
+            names=for_names,
+            set_new=True
+        )
+        # assert
+        known = self.r.known
+        self.assertEquals(for_names[0], set(known["names"]).pop())
