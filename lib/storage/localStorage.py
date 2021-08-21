@@ -8,7 +8,7 @@ class LocalStorage(Storage):
 
     def __init__(self, root_path='images'):
         self.root_path = os.path.join(
-            '/home/dmytro/pycharm/bouncer',
+            os.getcwd(),
             'resources',
             root_path
         )
@@ -16,7 +16,7 @@ class LocalStorage(Storage):
 
     def set_root_path(self, root_path):
         self.root_path = os.path.join(
-            '/home/dmytro/pycharm/bouncer',
+            os.getcwd(),
             'resources',
             root_path
         )
